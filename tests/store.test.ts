@@ -16,7 +16,7 @@ function pngSize(path: string): { width: number; height: number } {
   return { width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
 }
 
-/** The sites README "Tested sites" proves, and the ones it lists as not tested. */
+/** The sites the live compatibility run in docs/ARCHITECTURE.md §8 proves, and ones the listing must not name. */
 const TESTED = ["YouTube", "Twitch", "Kick", "Facebook", "Streamable", "LinkedIn"];
 const NOT_TESTED = ["Reddit", "Rumble", "Vimeo", "Dailymotion", "TikTok", "Instagram", "Netflix", "Prime Video", "Disney", "Max", "Hulu"];
 
@@ -44,12 +44,14 @@ describe("store listing", () => {
     expect(section(toLf(crlf), "Single purpose")).toBe(section(listing, "Single purpose"));
   });
 
-  it("the long description names only the sites README proves, and the measured facts", () => {
+  it("the long description names only the sites docs/ARCHITECTURE.md proves, and the measured facts", () => {
     const long = section(listing, "Long description").replace(/\s+/g, " ");
-    const readme = readText(join(ROOT, "README.md"));
+    const architecture = readText(join(ROOT, "docs", "ARCHITECTURE.md"));
+    const siteNotes = architecture.slice(architecture.indexOf("### Site notes (live compatibility run, 2026-10-25)"), architecture.indexOf("## 9. Test plan"));
     for (const site of TESTED) {
       expect(long, site).toContain(site);
-      expect(readme, site).toMatch(new RegExp(`\\| ${site}[^|]*\\| Works`));
+      // A row of the site notes table, not the "Not tested" rows.
+      expect(siteNotes, site).toMatch(new RegExp(`^\\| ${site}(?![^|]*\\|[^|]*\\| Not tested)`, "m"));
     }
     for (const site of NOT_TESTED) expect(long, site).not.toMatch(new RegExp(`\\b${site}\\b`));
     expect(long).not.toMatch(/\bX\b/);

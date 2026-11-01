@@ -1022,7 +1022,7 @@ Run against real public pages, signed out, with the production build in Chromium
 build, new headless, Windows), in fill-tab and in custom-rect 80 % × 80 %. Each control of the site's own player
 was exercised in custom fullscreen and compared with real fullscreen on the same page (the extension switched off
 for the site). The full per-check tables, screenshots and scripts are the run's `compat-report.md` and
-`compat-evidence.zip`. The README's "Tested sites" summarises them.
+`compat-evidence.zip`.
 
 | Site (page tested) | Element the site asks for | Notes |
 | ------------------ | ------------------------- | ----- |
