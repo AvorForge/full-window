@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture: a video with the browser's own controls</title>
+    <!--
+      Offline stand-in for a video file opened directly (https://archive.org/download/BigBuckBunny_124/Content/
+      big_buck_bunny_720p_surround.mp4, live run, 2026-10-30) and every page that uses native <video controls>.
+      The fullscreen button of Chromium's built-in controls requests fullscreen from the UA shadow DOM, not
+      through page script, so the MAIN-world shim never saw the request and the browser went really fullscreen.
+      No page script here asks for fullscreen; the page only logs what it sees.
+    -->
+    <style>
+      html, body { margin: 0; background: #222; }
+      #video { position: absolute; left: 80px; top: 60px; width: 640px; height: 360px; background: #000; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <video id="video" controls></video>
+    <script>
+      CFS.watch();
+      CFS.makeVideo(document.getElementById("video"));
+      window.__ready = true;
+    </script>
+  </body>
+</html>

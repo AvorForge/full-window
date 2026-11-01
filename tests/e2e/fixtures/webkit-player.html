@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 4: webkit-only player</title>
+    <style>
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      .player { position: relative; width: 480px; height: 270px; margin: 40px; background: rgb(17, 17, 17); }
+      .player video { display: block; width: 100%; height: 100%; }
+      .controls { position: absolute; left: 0; right: 0; bottom: 0; height: 36px; }
+      .player:-webkit-full-screen .controls { background: rgb(0, 0, 200); }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <div id="player" class="player" style="border-radius: 4px">
+      <video id="video"></video>
+      <div id="controls" class="controls">
+        <button id="fs" type="button">Fullscreen</button>
+        <button id="video-fs" type="button">Video fullscreen</button>
+      </div>
+    </div>
+    <script>
+      // An old WebKit-era player: prefixed API only, presence-checked the way such players do.
+      var player = document.getElementById("player");
+      var video = document.getElementById("video");
+      window.__features = {
+        webkitRequestFullscreen: typeof player.webkitRequestFullscreen,
+        webkitRequestFullScreen: typeof player.webkitRequestFullScreen,
+        webkitEnterFullscreen: typeof video.webkitEnterFullscreen,
+        webkitEnterFullScreen: typeof video.webkitEnterFullScreen,
+        webkitExitFullscreenOnVideo: typeof video.webkitExitFullscreen,
+        webkitSupportsFullscreen: typeof video.webkitSupportsFullscreen,
+        webkitDisplayingFullscreen: typeof video.webkitDisplayingFullscreen,
+        webkitExitFullscreen: typeof document.webkitExitFullscreen,
+        webkitCancelFullScreen: typeof document.webkitCancelFullScreen,
+        webkitFullscreenEnabled: document.webkitFullscreenEnabled,
+      };
+      CFS.makeVideo(video);
+      CFS.watch();
+      document.getElementById("fs").addEventListener("click", function () {
+        CFS.request(player, "webkitRequestFullscreen");
+      });
+      document.getElementById("video-fs").addEventListener("click", function () {
+        // webkitEnterFullscreen where the browser still has it, else the element API on the video.
+        CFS.request(video, typeof video.webkitEnterFullscreen === "function" ? "webkitEnterFullscreen" : "webkitRequestFullScreen");
+      });
+      window.__ready = true;
+    </script>
+  </body>
+</html>

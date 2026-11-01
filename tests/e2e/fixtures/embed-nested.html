@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 3: nested embed (two levels)</title>
+    <style>
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      iframe { display: block; width: 560px; height: 340px; margin: 20px; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <iframe id="outer" allowfullscreen src="__ORIGIN_B__/embed-middle.html" style="border: 1px solid rgb(7, 7, 7)"></iframe>
+    <button id="parent-focus" type="button">Top</button>
+    <script>
+      CFS.watch();
+      window.__ready = true;
+    </script>
+  </body>
+</html>

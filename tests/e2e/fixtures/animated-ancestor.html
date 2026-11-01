@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture: player under an animated hero wrapper</title>
+    <!--
+      Offline stand-in for https://videojs.org/ (live run, 2026-10-30): the player sits in a hero wrapper,
+      div[data-hero-video], whose entrance animation hero-video-in (fill-mode both, from a translate and scale to
+      none) has finished. Chromium keeps an element with a filling or running transform animation a containing
+      block for fixed descendants even when an !important `transform: none` wins the cascade, so the pinned player
+      landed at the wrapper's offset and its control bar went off screen.
+      ?running: the wrapper's animation is a long one, still running when the player asks for fullscreen.
+    -->
+    <style>
+      html, body { margin: 0; background: #f4f1ea; font: 14px sans-serif; }
+      header { height: 120px; }
+      @keyframes hero-video-in {
+        from { transform: translateY(12px) scale(0.99); }
+        to { transform: none; }
+      }
+      @keyframes hero-drift {
+        from { transform: translateY(40px); }
+        to { transform: none; }
+      }
+      @keyframes wobble {
+        from { transform: rotate(-1deg); }
+        to { transform: rotate(1deg); }
+      }
+      [data-hero-video] { margin: 24px 152px; width: 800px; height: 450px; animation: hero-video-in 0.3s ease-out both; }
+      [data-hero-video].running { animation: hero-drift 120s linear both; }
+      [data-hero-video].wobble { animation: wobble 0.5s linear infinite alternate; }
+      .media-container { position: relative; width: 100%; height: 100%; background: rgb(17, 17, 17); }
+      .media-container video { display: block; width: 100%; height: 100%; }
+      .control-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: rgb(0, 0, 200); }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <header>Header</header>
+    <div id="hero" data-hero-video>
+      <div id="player" class="media-skin media-container">
+        <video id="video"></video>
+        <div id="bar" class="control-bar"><button id="fs" type="button">Fullscreen</button></div>
+      </div>
+    </div>
+    <script>
+      CFS.watch();
+      var hero = document.getElementById("hero");
+      if (location.search.indexOf("running") >= 0) hero.classList.add("running");
+      ["animationstart", "animationend", "animationcancel", "animationiteration"].forEach(function (type) {
+        hero.addEventListener(type, function (event) { CFS.log(type, { name: event.animationName }); });
+      });
+      CFS.makeVideo(document.getElementById("video"));
+      document.getElementById("fs").addEventListener("click", function () {
+        if (document.fullscreenElement) CFS.exit();
+        else CFS.request(document.getElementById("player"));
+      });
+      // The wrapper's animation as the page sees it.
+      window.heroAnimation = function () {
+        var animations = hero.getAnimations();
+        var animation = animations[0];
+        return {
+          count: animations.length,
+          name: animation ? animation.animationName : null,
+          playState: animation ? animation.playState : null,
+          currentTime: animation ? animation.currentTime : null,
+          transform: getComputedStyle(hero).transform,
+        };
+      };
+      window.__ready = true;
+    </script>
+  </body>
+</html>

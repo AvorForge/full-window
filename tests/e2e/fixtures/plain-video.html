@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 1: plain video</title>
+    <style>
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      #stage { padding: 40px; }
+      video { display: block; height: 270px; background: #222; }
+      button { margin: 8px 8px 0 0; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <div id="stage" style="margin-left: 20px">
+      <video id="video" style="border: 3px solid rgb(10, 20, 30); width: 480px"></video>
+      <button id="enter" type="button">Fullscreen</button>
+      <button id="exit" type="button">Exit</button>
+    </div>
+    <script>
+      var video = document.getElementById("video");
+      CFS.makeVideo(video);
+      CFS.watch();
+      document.getElementById("enter").addEventListener("click", function () { CFS.request(video); });
+      document.getElementById("exit").addEventListener("click", function () { CFS.exit(); });
+      // ?onload: a page that tries fullscreen while loading, without a user gesture.
+      // The test checks it really has no user activation at the request (a leaked one would be honoured).
+      if (location.search.indexOf("onload") !== -1) {
+        CFS.log("activation", { isActive: navigator.userActivation.isActive, hasBeenActive: navigator.userActivation.hasBeenActive });
+        CFS.request(video);
+      }
+      window.__ready = true;
+    </script>
+  </body>
+</html>

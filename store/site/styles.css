@@ -1,0 +1,280 @@
+@font-face {
+  font-family: Inter;
+  src: url(fonts/inter.woff2) format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apple's product-page palette: pure white and black, #f5f5f7 bands, system green for checks. */
+:root {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --secondary: #6e6e73;
+  --tertiary: #86868b;
+  --hairline: #d2d2d7;
+  --band: #f5f5f7;
+  --tile: #ffffff;
+  --green: #34c759;
+  --link: #0066cc;
+  --button: #1d1d1f;
+  --button-text: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.72);
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.05);
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --secondary: #a1a1a6;
+    --tertiary: #86868b;
+    --hairline: #424245;
+    --band: #0b0b0c;
+    --tile: #1c1c1e;
+    --green: #30d158;
+    --link: #2997ff;
+    --button: #f5f5f7;
+    --button-text: #000000;
+    --nav-bg: rgba(22, 22, 23, 0.72);
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 52px; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 17px/1.47 Inter, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: -0.012em;
+  -webkit-font-smoothing: antialiased;
+  hanging-punctuation: first;
+}
+img, video { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+h1, h2, h3, .lede, figcaption strong { text-wrap: balance; }
+p, figcaption, summary { text-wrap: pretty; }
+:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 22px; }
+
+/* Local nav: frosted glass, the one place glass belongs. */
+.localnav {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid color-mix(in srgb, var(--hairline) 70%, transparent);
+}
+.localnav-inner { max-width: 980px; margin: 0 auto; height: 52px; padding: 0 22px; display: flex; align-items: center; gap: 24px; }
+.localnav-title { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 21px; letter-spacing: -0.02em; text-decoration: none; margin-right: auto; }
+.localnav-title img { width: 22px; height: 22px; }
+.localnav-links { display: flex; gap: 22px; font-size: 12px; }
+.localnav-links a { text-decoration: none; color: var(--secondary); transition: color 150ms; }
+.localnav-links a:hover { color: var(--text); }
+
+/* Buttons and links */
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 22px; border-radius: 980px;
+  background: var(--button); color: var(--button-text);
+  font-weight: 400; font-size: 17px; text-decoration: none; border: 0;
+  transition: opacity 150ms;
+}
+.button:hover { opacity: 0.85; }
+.button-small { min-height: 28px; padding: 0 12px; font-size: 12px; }
+.button[aria-disabled="true"] { background: var(--band); color: var(--secondary); pointer-events: none; }
+@media (prefers-color-scheme: dark) { .button[aria-disabled="true"] { background: #1c1c1e; } }
+/* Apple's blue links. The "›" isn't in our Inter subset, so the chevron is drawn (a mask in the text color). */
+.link, .inline-link { color: var(--link); text-decoration: none; }
+.link:hover, .inline-link:hover { text-decoration: underline; text-underline-offset: 0.15em; }
+.link::after {
+  content: ""; display: inline-block; width: 0.42em; height: 0.72em; margin-left: 0.3em; vertical-align: -0.02em; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 12'%3E%3Cpath d='M1 1l5 5-5 5' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 12'%3E%3Cpath d='M1 1l5 5-5 5' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+@media (forced-colors: active) { .link::after { content: " ›"; background: none; width: auto; height: auto; } }
+.link:empty { display: none; }
+
+/* Hero */
+.hero { text-align: center; padding: 64px 22px 0; }
+.hero-icon { margin: 0 auto 18px; width: 72px; height: 72px; }
+h1 { font-size: clamp(44px, 7vw, 80px); line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; margin: 0; }
+.h1-sub { display: block; color: var(--tertiary); }
+.lede { font-size: clamp(21px, 2.4vw, 28px); line-height: 1.21; max-width: 620px; margin: 22px auto 0; letter-spacing: -0.02em; font-weight: 500; }
+.cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 28px; margin-top: 30px; }
+.cta .link { font-size: 17px; }
+.facts { color: var(--secondary); font-size: 14px; margin: 16px 0 0; }
+
+/* The hero: a Windows desktop (the wallpaper) with the real Chrome window and the video in it. Sized in container
+   units, so it scales with the page without JS. The window is 1280 x 807 on a 1600 x 900 desktop. */
+.desktop {
+  position: relative; max-width: 1180px; margin: 48px auto 0; aspect-ratio: 16 / 9; container-type: inline-size;
+  border-radius: 22px; overflow: hidden; background: url(assets/wallpaper.webp) center / cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 30px 80px rgba(90, 20, 50, 0.22), 0 40px 120px -20px rgba(230, 110, 30, 0.18);
+}
+.desktop-window {
+  position: absolute; left: 10cqw; top: 2.875cqw; width: 80cqw; border-radius: 0.5cqw; overflow: hidden; background: #000;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1.5cqw 3.75cqw rgba(0, 0, 0, 0.38), 0 0.4cqw 1cqw rgba(0, 0, 0, 0.2);
+}
+.desktop-window picture { display: block; }
+.desktop-bar, .desktop-window video { width: 100%; }
+.desktop-window video { aspect-ratio: 16 / 9; object-fit: cover; }
+.play-toggle {
+  position: absolute; right: 18px; bottom: 18px; width: 36px; height: 36px; border-radius: 50%; border: 0;
+  background: rgba(29, 29, 31, 0.5); color: #fff; fill: #fff; display: grid; place-items: center; cursor: pointer;
+  -webkit-backdrop-filter: blur(12px) saturate(180%); backdrop-filter: blur(12px) saturate(180%);
+}
+.play-toggle .i-play, .play-toggle.paused .i-pause { display: none; }
+.play-toggle.paused .i-play { display: block; }
+
+/* Sections: white sections and full-width #f5f5f7 bands, headlines left-aligned on a 980 px grid */
+.section, .band { padding: 120px 0; }
+.band { background: var(--band); }
+h2 { font-size: clamp(36px, 5vw, 56px); line-height: 1.07; letter-spacing: -0.03em; font-weight: 600; margin: 0; }
+.intro { font-size: clamp(19px, 2vw, 21px); line-height: 1.38; color: var(--secondary); max-width: 690px; margin: 20px 0 0; letter-spacing: -0.015em; }
+.intro strong { color: var(--text); font-weight: 600; }
+/* The product name, wherever it appears (nav aside): the wallpaper ribbon's orange-to-pink, so it reads as a name.
+   Each wrapped line gets the whole gradient (clone). */
+.name {
+  font-weight: 600; color: #d9480f; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  background: linear-gradient(90deg, #e8590c, #d6336c); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+@media (prefers-color-scheme: dark) { .name { color: #ff8a3d; background-image: linear-gradient(90deg, #ff922b, #ff5c8a); } }
+@media (forced-colors: active) { .name { background: none; -webkit-text-fill-color: currentColor; } }
+figure { margin: 0; }
+
+/* Tiles: Apple's rounded cards */
+.tile { background: var(--tile); border-radius: 28px; overflow: hidden; }
+.tile h3 { font-size: 24px; line-height: 1.17; letter-spacing: -0.022em; font-weight: 600; margin: 0; }
+.tile p { color: var(--secondary); font-size: 17px; margin: 10px 0 0; }
+
+/* How it works: two tiles, words on top, the desktop below */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 56px; }
+.compare figcaption { padding: 34px 34px 0; color: var(--secondary); font-size: 17px; }
+.compare figcaption strong { display: block; color: var(--text); font-size: 24px; letter-spacing: -0.022em; font-weight: 600; margin-bottom: 6px; }
+.compare picture { display: block; }
+.compare img { width: calc(100% - 68px); margin: 22px 34px 34px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.12); }
+
+/* Sizes: a segmented control like the popup's own */
+.segmented {
+  display: flex; width: max-content; max-width: 100%; margin: 44px 0 0; padding: 3px; gap: 2px;
+  border-radius: 980px; background: var(--band);
+}
+.segmented button {
+  border: 0; background: transparent; color: var(--text); font: 500 15px Inter, sans-serif; letter-spacing: -0.01em;
+  padding: 9px 20px; border-radius: 980px; cursor: pointer; transition: background-color 200ms var(--ease), color 200ms var(--ease);
+}
+.segmented button[aria-pressed="true"] { background: var(--button); color: var(--button-text); font-weight: 600; }
+.sizes { margin-top: 40px; }
+.size figcaption { color: var(--secondary); font-size: 17px; margin-top: 22px; max-width: 620px; }
+.js .size[hidden] { display: none; }
+html:not(.js) .size + .size { margin-top: 56px; }
+.shot { width: 100%; border-radius: 14px; box-shadow: var(--shadow); }
+
+/* Good to know: a bento grid */
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+.bento .tile { padding: 34px; }
+.tile-player { grid-column: span 2; }
+.tile-player { display: flex; flex-direction: column; }
+.tile-player .controls-strip { margin: 30px -34px -34px; margin-top: auto; padding-top: 30px; overflow: hidden; }
+.tile-player .controls-strip img { border-radius: 0; }
+.tile-player .controls-strip img { width: 100%; }
+.tile-popup { grid-row: span 2; display: flex; flex-direction: column; }
+.tile-popup picture { display: block; margin: 6px 0 30px; }
+.tile-popup img { width: 100%; max-width: 280px; margin: 0 auto; border: 1px solid var(--hairline); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); }
+.tile-popup h3 { margin-top: auto; }
+.tile-sites { grid-column: span 2; }
+.tile-key, .tile-icon { display: flex; flex-direction: column; }
+.tile-key .keys, .tile-icon .icons { flex: 1; }
+.keys, .icons { display: flex; gap: 8px; align-items: center; min-height: 64px; margin: 0 0 22px !important; }
+kbd {
+  font: 500 17px Inter, sans-serif; color: var(--text); min-width: 52px; height: 52px; padding: 0 14px;
+  display: inline-grid; place-items: center; border-radius: 12px; background: var(--band);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--hairline) 80%, transparent);
+}
+kbd.big { min-width: 88px; height: 64px; font-size: 21px; }
+@media (prefers-color-scheme: dark) { kbd { background: #2c2c2e; } }
+/* Keys inside a sentence: small keycaps on the text's baseline */
+kbd.key { min-width: 0; height: auto; padding: 0.06em 0.42em 0.1em; border-radius: 6px; font-size: 0.82em; font-weight: 600; line-height: 1.3; display: inline-block; vertical-align: 0.06em; color: var(--text); }
+.icons img { width: 40px; height: 40px; }
+.sites { list-style: none; padding: 0; margin: 22px 0 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 20px; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+.sites li { display: flex; align-items: center; gap: 10px; }
+.sites li::before {
+  content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--green)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6.5 11.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px;
+}
+.tile-sites p { font-size: 14px; color: var(--secondary); margin-top: 16px; }
+
+/* Privacy: a black band in both modes */
+.privacy { background: #000; color: #f5f5f7; padding: 140px 0; }
+.privacy .eyebrow { color: #86868b; font-size: 21px; font-weight: 600; margin: 0 0 10px; letter-spacing: -0.015em; }
+.privacy h2 { font-size: clamp(40px, 6vw, 64px); }
+.privacy .intro { color: #a1a1a6; }
+.privacy .intro strong { color: #f5f5f7; }
+.privacy .link { display: inline-block; margin-top: 28px; font-size: 19px; color: #2997ff; }
+
+/* Questions */
+.faq h2 { margin-bottom: 40px; }
+.faq details { border-bottom: 1px solid var(--hairline); }
+.faq details:first-of-type { border-top: 1px solid var(--hairline); }
+.faq summary { list-style: none; cursor: pointer; padding: 24px 40px 24px 0; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 4px; top: 19px; font-size: 28px; font-weight: 300; color: var(--secondary); transition: transform 200ms var(--ease); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { margin: 0 0 26px; color: var(--secondary); font-size: 17px; max-width: 680px; }
+
+/* Closing */
+.closing { text-align: center; padding: 40px 22px 140px; }
+.closing img { margin: 0 auto 22px; width: 96px; height: 96px; }
+.closing h2 { font-size: clamp(32px, 4.4vw, 48px); }
+
+/* Footer: Apple's small gray footer on the band color */
+footer { background: var(--band); color: var(--secondary); font-size: 12px; line-height: 1.33; padding: 20px 0 22px; }
+footer p { margin: 0; }
+footer .fine { padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
+.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 14px; }
+.footer-links { display: flex; gap: 0; }
+.footer-links a { text-decoration: none; color: var(--text); padding: 0 10px; border-left: 1px solid var(--hairline); }
+.footer-links a:first-child { border-left: 0; padding-left: 0; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* Privacy policy and other text pages */
+.doc { max-width: 692px; margin: 0 auto; padding: 80px 22px 120px; }
+.doc h1 { font-size: clamp(32px, 4.6vw, 48px); line-height: 1.08; letter-spacing: -0.03em; }
+.doc .updated { color: var(--secondary); font-size: 15px; margin: 14px 0 0; }
+.doc h2 { font-size: 24px; line-height: 1.2; letter-spacing: -0.022em; margin: 48px 0 0; }
+.doc p { margin: 12px 0 0; }
+.doc a { text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+.doc a:hover { text-decoration-color: currentColor; }
+
+/* Scroll reveal: things rise into place once, the way Apple's pages do. Off with reduced motion or no JS. */
+.js .reveal { opacity: 0; transform: translateY(32px); transition: opacity 900ms var(--ease), transform 900ms var(--ease); }
+.js .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; transition: none; } }
+
+@media (max-width: 834px) {
+  .localnav-links { display: none; }
+  .bento { grid-template-columns: 1fr 1fr; }
+  .tile-player, .tile-sites { grid-column: span 2; }
+  .tile-popup { grid-row: auto; grid-column: span 2; }
+}
+@media (max-width: 640px) {
+  .hero { padding-top: 44px; }
+  .section, .band { padding: 80px 0; }
+  .privacy { padding: 96px 0; }
+  .compare, .bento { grid-template-columns: 1fr; }
+  .tile-player, .tile-sites, .tile-popup { grid-column: auto; }
+  .bento .tile { padding: 28px; }
+  .tile-player .controls-strip { margin: 26px -28px -28px; }
+  .compare figcaption { padding: 28px 28px 0; }
+  .compare img { width: calc(100% - 56px); margin: 18px 28px 28px; }
+  .sites { grid-template-columns: 1fr 1fr; font-size: 17px; }
+  .desktop { border-radius: 14px; margin-top: 36px; }
+  .play-toggle { right: 10px; bottom: 10px; width: 30px; height: 30px; }
+  .segmented button { padding: 8px 12px; font-size: 14px; }
+  .tile, .compare .tile { border-radius: 22px; }
+}

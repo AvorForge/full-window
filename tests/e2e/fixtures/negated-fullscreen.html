@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture: :not(:fullscreen) rules inserted with insertRule</title>
+    <!--
+      Offline stand-in for Loom's share page (https://www.loom.com/share/..., live run, 2026-10-30). Like emotion,
+      the page inserts its rules into a <style> element's sheet with insertRule after load:
+      `.css-15mfcn7:not(:fullscreen) [data-hide-ifnot-fullscreen] { display: none }` (and the
+      :-webkit-full-screen twin) hides the fullscreen-only controls (Pause, Exit full screen) outside fullscreen,
+      and `.css-15mfcn7:fullscreen [data-hide-if-fullscreen]` hides the normal bar in fullscreen. In fake
+      fullscreen the element is not really :fullscreen, so the original :not(:fullscreen) rule kept matching while
+      the mirrored rule hid the normal bar: neither set showed. Its fullscreenchange handler also gives the player
+      a new class and inserts that class's rules then, as emotion does when a component re-renders.
+    -->
+    <style>
+      html, body { margin: 0; background: #eef; font: 14px sans-serif; }
+      #main { padding: 60px 40px; }
+      #player { position: relative; width: 640px; height: 360px; background: rgb(17, 17, 17); }
+      #player video { display: block; width: 100%; height: 100%; }
+      .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; display: flex; gap: 8px; align-items: center; }
+      .bar button { width: 120px; height: 32px; }
+    </style>
+    <style id="emotion" data-emotion="css"></style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <div id="player" class="css-15mfcn7">
+        <video id="video"></video>
+        <div id="normal-bar" class="bar" data-hide-if-fullscreen><button id="enter" type="button">Enter full screen</button></div>
+        <div id="fs-bar" class="bar" data-hide-ifnot-fullscreen>
+          <button id="pause" type="button">Pause</button>
+          <button id="exit" type="button">Exit full screen</button>
+          <span id="late" data-late-only>Late</span>
+        </div>
+      </div>
+    </div>
+    <script>
+      CFS.watch();
+      var player = document.getElementById("player");
+      var sheet = document.getElementById("emotion").sheet;
+      function insert(rule) {
+        sheet.insertRule(rule, sheet.cssRules.length);
+      }
+      // After load, as emotion's speedy mode does: nothing of this is in the <style> element's text.
+      [
+        ".css-15mfcn7:not(:fullscreen) [data-hide-ifnot-fullscreen]{display:none;}",
+        ".css-15mfcn7:not(:-webkit-full-screen) [data-hide-ifnot-fullscreen]{display:none;}",
+        ".css-15mfcn7:fullscreen [data-hide-if-fullscreen]{display:none;}",
+        ".css-15mfcn7:-webkit-full-screen [data-hide-if-fullscreen]{display:none;}",
+      ].forEach(insert);
+      var lateInserted = false;
+      document.addEventListener("fullscreenchange", function () {
+        if (document.fullscreenElement === player && !lateInserted) {
+          lateInserted = true;
+          player.classList.add("css-late1");
+          insert(".css-late1:not(:fullscreen) [data-late-only]{display:none;}");
+        }
+      });
+      CFS.makeVideo(document.getElementById("video"));
+      document.getElementById("enter").addEventListener("click", function () { CFS.request(player); });
+      document.getElementById("exit").addEventListener("click", function () { CFS.exit(); });
+      document.getElementById("pause").addEventListener("click", function () { CFS.log("pause"); });
+      window.selectors = function () {
+        return Array.from(sheet.cssRules, function (rule) { return rule.selectorText; });
+      };
+      window.__ready = true;
+    </script>
+  </body>
+</html>

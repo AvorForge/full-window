@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 2: container player</title>
+    <script>
+      // Anti-tamper feature check, as some players run it before trusting the Fullscreen API.
+      window.__features = (function () {
+        var source = Function.prototype.toString;
+        var request = Element.prototype.requestFullscreen;
+        var descriptor = Object.getOwnPropertyDescriptor(Element.prototype, "requestFullscreen");
+        var getter = Object.getOwnPropertyDescriptor(Document.prototype, "fullscreenElement");
+        return {
+          type: typeof request,
+          toString: request.toString(),
+          callToString: source.call(request),
+          native: /\[native code\]/.test(source.call(request)),
+          toStringOfToString: source.call(source),
+          name: request.name,
+          length: request.length,
+          hasPrototype: Object.prototype.hasOwnProperty.call(request, "prototype"),
+          writable: descriptor.writable,
+          enumerable: descriptor.enumerable,
+          configurable: descriptor.configurable,
+          getterToString: source.call(getter.get),
+          getterName: getter.get.name,
+          exitToString: source.call(Document.prototype.exitFullscreen),
+        };
+      })();
+    </script>
+    <style>
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      #masthead { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: rgb(255, 165, 0); z-index: 1000; }
+      #main { padding-top: 80px; }
+      .wrapper { transform: translateZ(0); overflow: hidden; z-index: 1; position: relative; width: 640px; height: 360px; margin: 0 40px; }
+      .player { position: relative; width: 100%; height: 100%; background: rgb(17, 17, 17); }
+      .player video { display: block; width: 100%; height: 100%; }
+      .controls { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: rgb(200, 0, 0); }
+      .player:fullscreen .controls { background: rgb(0, 0, 200); }
+      .player:fullscreen { background: rgb(5, 6, 7); }
+      .player::backdrop { background: rgb(255, 0, 255); }
+      ::backdrop { background-color: rgb(255, 0, 255); }
+      .player.is-fullscreen .controls { height: 60px; }
+      /* Like Twitch's player: in fullscreen a layer of the player is fixed and viewport-sized (it holds the video there). */
+      .persistent { display: none; }
+      .player:fullscreen .persistent { display: block; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; }
+      #sidebar { position: relative; z-index: 10; margin: 20px 40px; height: 120px; background: rgb(0, 128, 0); }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <header id="masthead">Masthead</header>
+    <div id="main">
+      <div id="wrapper" class="wrapper" style="outline: 1px dotted rgb(1, 2, 3)">
+        <div id="player" class="player">
+          <video id="video"></video>
+          <div id="controls" class="controls"><button id="fs" type="button">Fullscreen</button></div>
+          <div id="persistent" class="persistent"></div>
+        </div>
+      </div>
+      <div id="sidebar">Sidebar</div>
+      <x-player id="shadow-host"></x-player>
+    </div>
+    <script>
+      CFS.watch();
+      var trusted = window.__features.native && window.__features.type === "function";
+
+      // YouTube style: the player toggles a class in its fullscreenchange handler.
+      function wire(player, video, button, root) {
+        CFS.makeVideo(video);
+        button.addEventListener("click", function () {
+          if (!trusted) {
+            CFS.log("tampered");
+            return;
+          }
+          CFS.request(player);
+        });
+        document.addEventListener("fullscreenchange", function () {
+          var current = root.fullscreenElement === player;
+          player.classList.toggle("is-fullscreen", current);
+        });
+      }
+      wire(document.getElementById("player"), document.getElementById("video"), document.getElementById("fs"), document);
+
+      // Shadow-DOM variant: the same player inside an open shadow root of a custom element.
+      customElements.define("x-player", class extends HTMLElement {
+        constructor() {
+          super();
+          var root = this.attachShadow({ mode: "open" });
+          root.innerHTML =
+            "<style>" +
+            ":host { display: block; margin: 20px 40px; }" +
+            ".wrapper { transform: translateZ(0); overflow: hidden; z-index: 1; position: relative; width: 480px; height: 270px; }" +
+            ".player { position: relative; width: 100%; height: 100%; background: rgb(17, 17, 17); }" +
+            ".player video { display: block; width: 100%; height: 100%; }" +
+            ".controls { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: rgb(200, 0, 0); }" +
+            ".player:fullscreen .controls { background: rgb(0, 0, 200); }" +
+            "</style>" +
+            '<div id="s-wrapper" class="wrapper" style="outline: 1px dotted rgb(4, 5, 6)">' +
+            '<div id="s-player" class="player"><video id="s-video"></video>' +
+            '<div id="s-controls" class="controls"><button id="s-fs" type="button">Fullscreen</button></div></div></div>';
+          wire(root.getElementById("s-player"), root.getElementById("s-video"), root.getElementById("s-fs"), root);
+        }
+      });
+      window.__ready = true;
+    </script>
+  </body>
+</html>

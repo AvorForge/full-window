@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 3: embed parent</title>
+    <style>
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      iframe { display: block; width: 480px; height: 270px; margin: 20px; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <div id="frames" style="padding: 10px">
+      <iframe id="allowed" allowfullscreen src="__ORIGIN_B__/embed-child.html?name=allowed" style="border: 2px solid rgb(9, 9, 9)"></iframe>
+      <iframe id="denied" src="__ORIGIN_B__/embed-child.html?name=denied"></iframe>
+    </div>
+    <button id="parent-focus" type="button">Parent</button>
+    <script>
+      CFS.watch();
+      window.__ready = true;
+    </script>
+  </body>
+</html>

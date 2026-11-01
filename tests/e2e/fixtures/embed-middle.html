@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 3: nested embed, middle frame</title>
+    <style>
+      html, body { margin: 0; background: #304050; font: 12px sans-serif; }
+      iframe { display: block; width: 480px; height: 270px; margin: 10px; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <iframe id="inner" allowfullscreen src="__ORIGIN_A__/embed-child.html?name=inner"></iframe>
+    <button id="middle-focus" type="button">Middle</button>
+    <script>
+      CFS.watch();
+      window.__ready = true;
+    </script>
+  </body>
+</html>

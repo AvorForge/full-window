@@ -1,0 +1,564 @@
+/* Shared by the popup and the options page: the Graphite design. Inter (bundled), a pure white or pure black page
+   with the system theme, no hue: selection and switches that are on are black in light mode and white in dark.
+   Capsule controls of translucent "glass", flat grouped rows. */
+
+/* Inter 4.1, Latin subset, variable weight 400-600 (fonts/OFL.txt). Loaded from the extension, never the web.
+   "block": text waits the few milliseconds the local file takes rather than showing a fallback font first. */
+@font-face {
+  font-family: Inter;
+  src: url("fonts/inter.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  color-scheme: light dark;
+  --page: #ffffff;
+  --label: #000000;
+  --secondary: rgb(0 0 0 / 0.85);
+  --group: #f7f7f7;
+  --field: #ffffff;
+  --fill: rgb(0 0 0 / 0.05);
+  --line: rgb(0 0 0 / 0.1);
+  --edge: rgb(0 0 0 / 0.12);
+  --glass: rgb(255 255 255 / 0.8);
+  --rim: rgb(255 255 255 / 0.9);
+  --shadow: rgb(0 0 0 / 0.14);
+  /* Selection, switches that are on, keyboard focus. */
+  --accent: #000000;
+  --accent-text: #ffffff;
+  --knob-on: #ffffff;
+  --knob-off: #ffffff;
+  --switch-on: #34C759;
+  --switch-off: #FF3B30;
+  accent-color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #000000;
+    --label: #ffffff;
+    --secondary: rgb(255 255 255 / 0.85);
+    --group: #1e1e1e;
+    --field: #1e1e1e;
+    --fill: rgb(255 255 255 / 0.1);
+    --line: rgb(255 255 255 / 0.15);
+    --edge: rgb(255 255 255 / 0.14);
+    --glass: rgb(255 255 255 / 0.1);
+    --rim: rgb(255 255 255 / 0.35);
+    --shadow: rgb(0 0 0 / 0.4);
+    --accent: #ffffff;
+    --accent-text: #000000;
+    --knob-on: #ffffff;
+    --switch-on: #30D158;
+    --switch-off: #FF453A;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* On body, not :root: Chromium gives extension pages a default body font size of 75%. */
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--label);
+  font: 400 13px/16px Inter, system-ui, sans-serif;
+  letter-spacing: -0.08px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.23px;
+}
+
+h2 {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--secondary);
+}
+
+.small {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--label);
+}
+
+/* Text fields: flat, 8 px corners. */
+input[type="number"],
+input[type="search"] {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 5px 10px;
+  border: 0.5px solid var(--edge);
+  border-radius: 8px;
+  background: var(--field);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.04);
+}
+
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+input::placeholder {
+  color: var(--secondary);
+  opacity: 1;
+}
+
+/* A number and its unit side by side. */
+.length {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 53px;
+  gap: 6px;
+}
+
+/* Closed <select>: a glass capsule with up-and-down chevrons (the SVG next to it). The open menu is the browser's. */
+.popup-select {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.popup-select svg {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  pointer-events: none;
+  color: var(--label);
+}
+
+select {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 5px 26px 5px 11px;
+  border: 0.5px solid var(--edge);
+  border-radius: 999px;
+  background: var(--glass);
+  box-shadow: inset 0 1px 0 var(--rim), 0 1px 3px var(--shadow);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+}
+
+select option {
+  background: var(--page);
+  color: var(--label);
+}
+
+input[type="color"] {
+  appearance: none;
+  width: 40px;
+  height: 26px;
+  padding: 4px;
+  border: 0.5px solid var(--edge);
+  border-radius: 8px;
+  background: var(--field);
+  cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: 4px;
+}
+
+/* On/off switch: a checkbox with role="switch". System colors are scoped to switches and the state dot. */
+input.switch {
+  appearance: none;
+  flex-shrink: 0;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin: 0;
+  border: 0.5px solid var(--edge);
+  border-radius: 999px;
+  background: var(--switch-off);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.1);
+  cursor: pointer;
+}
+
+input.switch:checked {
+  border-color: transparent;
+  background: var(--switch-on);
+}
+
+input.switch::before {
+  content: "";
+  position: absolute;
+  top: 1.5px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--knob-off);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -1px 1px rgb(0 0 0 / 0.12), 0 1px 3px rgb(0 0 0 / 0.24);
+}
+
+input.switch:checked::before {
+  left: 17px;
+  background: var(--knob-on);
+}
+
+/* Segmented control: a radio group drawn as a capsule track; the chosen option is a raised lens in the accent. */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: 34px;
+  padding: 3px;
+  border: 0.5px solid var(--edge);
+  border-radius: 999px;
+  background: var(--fill);
+  box-shadow: inset 0 1px 0 var(--rim), inset 0 -1px 1px rgb(0 0 0 / 0.04);
+  backdrop-filter: blur(16px);
+}
+
+.segmented label {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.segmented label:has(input:checked) {
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.65), inset 0 -1px 1px rgb(0 0 0 / 0.18), 0 2px 4px rgb(0 0 0 / 0.2);
+  transform: scale(1.018, 1.035);
+}
+
+/* The lens's half-pixel rim. */
+.segmented label:has(input:checked)::after {
+  content: "";
+  position: absolute;
+  inset: 0.5px;
+  border: 0.5px solid rgb(255 255 255 / 0.35);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.segmented input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Every button is a glass capsule, including the ones that read as links ("Settings", "Reset this site"). */
+button {
+  min-height: 28px;
+  padding: 5px 13px;
+  border: 0.5px solid var(--edge);
+  border-radius: 999px;
+  background: var(--glass);
+  box-shadow: inset 0 1px 0 var(--rim), inset 0 -1px 1px rgb(0 0 0 / 0.04), 0 1px 3px var(--shadow);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+}
+
+button:active {
+  box-shadow: inset 0 1px 3px var(--shadow);
+  transform: translateY(0.5px);
+}
+
+button.link {
+  color: var(--label);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.segmented label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* On the chosen option, which is the accent color itself, the ring sits closer in the label color. */
+.segmented label:has(input:checked:focus-visible) {
+  outline: 2px solid var(--label);
+  outline-offset: 2px;
+}
+
+/* Inset grouped rows (the options page). */
+.group {
+  border-radius: 16px;
+  corner-shape: squircle;
+  background: var(--group);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Solid fills instead of translucent glass, no blur, no depth shadows, no lens. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass: #ffffff;
+    --fill: #f7f7f7;
+  }
+  .segmented,
+  button,
+  select {
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .segmented label:has(input:checked) {
+    box-shadow: none;
+    transform: none;
+  }
+  .segmented label:has(input:checked)::after {
+    display: none;
+  }
+  input.switch::before {
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) {
+  :root {
+    --glass: #1e1e1e;
+    --fill: #1e1e1e;
+  }
+}
+
+/* Nothing here moves on its own; with reduced motion, pressed buttons and the chosen option do not shift or grow
+   either, and scrolling jumps. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+  button:active,
+  .segmented label:has(input:checked) {
+    transform: none;
+  }
+}
+
+/* The popup state also reads in words; the switch position remains the non-color cue. */
+#state::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--switch-off);
+  vertical-align: 1px;
+}
+
+.row:has(#site-enabled:checked) #state::before {
+  background: var(--switch-on);
+}
+
+/* Touch: two additional accents, confined to keyboard focus and the shortcuts action.
+   Exact increased-contrast colors from Apple's HIG Color table (2026-10-28).
+   Colored labels retain a solid white backing in light mode in every state. */
+:root {
+  --destructive: #E9152D;
+  --action: #1E6EF4;
+  --focus: #1E6EF4;
+  --hover: #eeeeee;
+  --pressed: #e4e4e4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --group: #1c1c1c;
+    --field: #262626;
+    --glass: rgb(255 255 255 / 0.08);
+    --rim: rgb(255 255 255 / 0.16);
+    --line: rgb(255 255 255 / 0.12);
+    --edge: rgb(255 255 255 / 0.22);
+    --secondary: #bdbdbd;
+    --destructive: #FF6165;
+    --action: #5CB8FF;
+    --focus: #5CB8FF;
+    --hover: #353535;
+    --pressed: #3c3c3c;
+  }
+}
+
+/* One height and baseline for fields and pop-up buttons. */
+input[type="number"], input[type="search"], select { height: 32px; }
+.length { grid-template-columns: minmax(0, 1fr) 56px; gap: 8px; }
+.popup-select svg { top: 50%; right: 10px; transform: translateY(-50%); }
+select { padding: 6px 28px 6px 12px; }
+button { min-height: 30px; padding: 6px 12px; }
+
+/* The selected lens stays monochrome and sits exactly inside its grid cell. */
+.segmented { height: 36px; }
+.segmented label { font-weight: 500; }
+.segmented label:has(input:checked) { font-weight: 600; transform: none; }
+
+/* A compact, inset color well. The native picker and value are unchanged. */
+input[type="color"] {
+  width: 44px; height: 28px; padding: 3px;
+  border: 1px solid #8e8e93; border-radius: 7px;
+  background: var(--field);
+  box-shadow: inset 0 1px 0 var(--rim);
+}
+input[type="color"]::-webkit-color-swatch {
+  border: 0.5px solid rgb(128 128 128 / 0.5); border-radius: 3px;
+}
+
+/* Constant backings keep red and blue labels above 4.5:1, including hover/press. */
+button#clear-site, button#reset, #sites button { color: var(--destructive); background: #ffffff; }
+button#open-shortcuts { color: var(--action); background: #ffffff; }
+@media (prefers-color-scheme: dark) {
+  button#clear-site, button#reset, #sites button, button#open-shortcuts { background: #262626; }
+}
+
+/* Popup: a 4 px rhythm, legible 12 px segments, more room for the long option. */
+body:has(#site-enabled) main { gap: 20px; padding: 20px 16px 16px; }
+body:has(#site-enabled) #state { margin-top: 4px; }
+body:has(#site-enabled) #site-controls { gap: 16px; }
+body:has(#site-enabled) .field { gap: 8px; }
+body:has(#site-enabled) .segmented { margin: 0; height: 38px; grid-template-columns: 0.76fr 1fr 1.24fr; }
+body:has(#site-enabled) .segmented label { font-size: 12px; letter-spacing: -0.08px; }
+body:has(#site-enabled) #rect-size > .field:last-child { grid-column: 1 / -1; }
+body:has(#site-enabled) footer { padding-top: 16px; gap: 12px; }
+
+/* Settings: a single inset grid, steady rows, and breathing room around headings. */
+body:has(#size-title) main { width: min(680px, 100%); padding: 16px 20px 12px; }
+body:has(#size-title) header { margin-bottom: 20px; }
+body:has(#size-title) h2 { margin: 0 12px 8px; }
+body:has(#size-title) section + section { margin-top: 12px; }
+body:has(#size-title) .group { border-radius: 12px; }
+body:has(#size-title) .group > .row { min-height: 40px; padding: 8px 12px; }
+body:has(#size-title) .group > .row > label { flex: 1; min-width: 0; }
+body:has(#size-title) #site-filter { height: 32px; margin-top: 12px; }
+body:has(#size-title) #sites li { min-height: 48px; padding: 7px 0; }
+body:has(#size-title) #sites li > button { flex-shrink: 0; min-width: 64px; }
+body:has(#size-title) #sites li .small { margin-top: 2px; }
+body:has(#size-title) #sites li:last-child { padding-bottom: 7px; }
+body:has(#size-title) #shortcut-line { padding: 12px 12px 8px; }
+body:has(#size-title) .group > .about { padding: 10px 12px; }
+body:has(#size-title) .about p { margin-bottom: 4px; }
+body:has(#size-title) .about p:last-child { margin-bottom: 0; }
+
+/* Short, direct feedback, with no motion. No animated shadows, glows, or background tint. */
+@media (hover: hover) {
+  button:hover, select:hover, input[type="color"]:hover { border-color: var(--label); }
+  .segmented label:not(:has(input:checked)):hover { background: var(--hover); }
+  input[type="number"]:hover, input[type="search"]:hover { border-color: var(--label); }
+}
+select:active { box-shadow: inset 0 1px 3px var(--shadow); }
+.segmented label:not(:has(input:checked)):active { background: var(--pressed); }
+input.switch:active { outline: 1px solid var(--label); outline-offset: 1px; }
+:focus-visible,
+.segmented label:has(input:focus-visible),
+.segmented label:has(input:checked:focus-visible) {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+/* Focus the visible radio label, never its transparent input. */
+.segmented input:focus-visible { outline: none; }
+@media (prefers-reduced-transparency: reduce) {
+  input[type="color"] { box-shadow: none; }
+  select:active, button:active { box-shadow: none; }
+}
+@media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) {
+  :root { --glass: #262626; --fill: #262626; }
+}
+
+/* System Settings: 24 px row tiles, 6 px corners, original 16 px SVG drawings.
+   Fixed increased-contrast light system colors keep white glyphs legible in both themes. */
+.settings-tile { display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 24px; width: 24px; height: 24px; border-radius: 6px; color: #ffffff; }
+.settings-tile svg { width: 16px; height: 16px; }
+.tile-size { background: #1E6EF4; }
+.tile-color { background: #C55300; }
+.tile-escape { background: #B02FC2; }
+.tile-shortcut { background: #008198; }
+.tile-about { background: #6C6C70; }
+body:has(.settings-tile) .group > .row { gap: 12px; }
+body:has(.settings-tile) #shortcut-line { display: flex; align-items: center; gap: 12px; }
+body:has(.settings-tile) .about > div { flex: 1; min-width: 0; }
+@media (max-width: 420px) {
+  body:has(.settings-tile) .about { flex-wrap: wrap; }
+  body:has(.settings-tile) .about > div { flex-basis: calc(100% - 36px); }
+  body:has(.settings-tile) .about > button { margin-left: 36px; }
+}
+
+/* Short state changes on controls, as on Apple platforms; nothing else moves. Off with reduced motion. */
+input.switch, .segmented label { transition: background-color 120ms ease, border-color 120ms ease; }
+input.switch::before { transition: left 140ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}

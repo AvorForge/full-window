@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 3: embed child</title>
+    <style>
+      html, body { margin: 0; background: #203040; color: #fff; font: 12px sans-serif; }
+      video { display: block; height: 180px; background: #222; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <video id="video" style="width: 320px"></video>
+    <button id="enter" type="button">Fullscreen</button>
+    <button id="child-focus" type="button">Child</button>
+    <script>
+      var video = document.getElementById("video");
+      CFS.makeVideo(video, "#c06030");
+      CFS.watch();
+      document.getElementById("enter").addEventListener("click", function () { CFS.request(video); });
+      window.__ready = true;
+    </script>
+  </body>
+</html>

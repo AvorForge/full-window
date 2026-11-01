@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Full Window, Not Screen: Video Sizer</title>
+    <meta name="description" content="Hit fullscreen on a video and it fills the browser tab instead of your whole screen. For Chrome and Microsoft Edge." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://avorforge.com/full-window/" />
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-on-32.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Full Window, Not Screen: Video Sizer" />
+    <meta property="og:description" content="Hit fullscreen on a video and it fills the browser tab instead of your whole screen." />
+    <meta property="og:url" content="https://avorforge.com/full-window/" />
+    <meta property="og:image" content="https://avorforge.com/full-window/assets/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A Windows desktop with a video filling a Chrome tab." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Full Window, Not Screen: Video Sizer",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome, Microsoft Edge",
+        "softwareVersion": "1.0.0",
+        "description": "Hit fullscreen on a video and it fills the browser tab instead of your whole screen.",
+        "url": "https://avorforge.com/full-window/",
+        "image": "https://avorforge.com/full-window/assets/og.jpg",
+        "publisher": { "@type": "Organization", "name": "Avor Forge LLC", "url": "https://avorforge.com/" }
+      }
+    </script>
+    <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <nav class="localnav" aria-label="Full Window">
+      <div class="localnav-inner">
+        <a class="localnav-title" href="#top"><img src="assets/icon.svg" width="22" height="22" alt="" />Full Window</a>
+        <div class="localnav-links">
+          <a href="#how">How it works</a>
+          <a href="#sizes">Sizes</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#faq">Questions</a>
+        </div>
+        <a class="button button-small" href="#get" data-get>Get the extension</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <section class="hero">
+        <img class="hero-icon" src="assets/icon.svg" width="72" height="72" alt="" />
+        <h1><span class="name">Full&nbsp;Window, Not&nbsp;Screen</span><span class="h1-sub">Video Sizer</span></h1>
+        <p class="lede">Hit fullscreen on a video and it fills the browser tab instead of your whole screen.</p>
+        <div class="cta" id="get">
+          <a class="button" href="#" data-get data-primary>Get the extension</a>
+          <a class="link get-other" href="#" data-other></a>
+        </div>
+        <p class="facts">For Chrome and Microsoft&nbsp;Edge · Collects&nbsp;nothing</p>
+
+        <figure class="desktop reveal">
+          <div class="desktop-window">
+            <picture><source srcset="assets/chrome-top-dark.webp" media="(prefers-color-scheme: dark)" /><img class="desktop-bar" src="assets/chrome-top.webp" width="1280" height="87" alt="" /></picture>
+            <video id="hero-video" src="assets/hero.mp4" poster="assets/hero-poster.webp" muted loop playsinline preload="metadata"
+                   aria-label="A Windows desktop with a Chrome window. On a video page, the player's fullscreen button is pressed and the video fills the tab, with the tabs and toolbar still there. The player's own seek bar and volume are used, then Esc returns to the page."></video>
+          </div>
+          <button class="play-toggle" type="button" data-video="hero-video" aria-label="Pause the video">
+            <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg>
+            <svg class="i-play" width="12" height="12" viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>
+          </button>
+        </figure>
+      </section>
+
+      <section class="band" id="how">
+        <div class="wrap">
+          <h2 class="reveal">It fills the tab, not the screen.</h2>
+          <p class="intro reveal">Normally, fullscreen takes over your whole monitor. <strong>With <span class="name">Full&nbsp;Window</span> on, the video fills the browser tab and everything else stays put.</strong> You can still check another window, keep an eye on chat, or get some work done.</p>
+          <div class="compare">
+            <figure class="tile reveal">
+              <figcaption><strong>Normal fullscreen</strong>The video covers your whole screen.</figcaption>
+              <img src="assets/flat-fullscreen.webp" width="1600" height="900" loading="lazy" alt="The whole screen is covered by the video." />
+            </figure>
+            <figure class="tile reveal">
+              <figcaption><strong>With <span class="name">Full&nbsp;Window</span></strong>The video fills the tab. Everything else stays put.</figcaption>
+              <picture><source srcset="assets/flat-fullwindow-dark.webp" media="(prefers-color-scheme: dark)" /><img src="assets/flat-fullwindow.webp" width="1600" height="900" loading="lazy" alt="The same screen. The video fills a Chrome window, and a notes window is still open next to it." /></picture>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="sizes">
+        <div class="wrap">
+          <h2 class="reveal">Pick the size.</h2>
+          <p class="intro reveal">Set it once for every site, or give a site its own size. <strong>It’s all in the toolbar button.</strong></p>
+          <div class="segmented reveal" role="group" aria-label="Size">
+            <button type="button" aria-pressed="true" data-size="fill">Fill tab</button>
+            <button type="button" aria-pressed="false" data-size="custom">Custom size</button>
+            <button type="button" aria-pressed="false" data-size="popout">Pop out</button>
+          </div>
+          <div class="sizes reveal">
+            <figure class="size" data-size-panel="fill">
+              <picture><source srcset="assets/fill-dark.webp" media="(prefers-color-scheme: dark)" /><img class="shot" src="assets/fill.webp" width="1600" height="1009" loading="lazy" alt="Chrome with the video filling the whole tab." /></picture>
+              <figcaption>The video fills the whole tab.</figcaption>
+            </figure>
+            <figure class="size" data-size-panel="custom">
+              <picture><source srcset="assets/custom-dark.webp" media="(prefers-color-scheme: dark)" /><img class="shot" src="assets/custom.webp" width="1600" height="1009" loading="lazy" alt="Chrome with the video at 80 percent of the tab, centered on black." /></picture>
+              <figcaption>Pick a width and height, in pixels or percent, and where it sits. This one’s 80%&nbsp;by&nbsp;80%, centered.</figcaption>
+            </figure>
+            <figure class="size" data-size-panel="popout">
+              <picture><source srcset="assets/popout-dark.webp" media="(prefers-color-scheme: dark)" /><img class="shot" src="assets/popout.webp" width="1920" height="1080" loading="lazy" alt="The video in its own small window in the corner of the screen, over a browser window with notes." /></picture>
+              <figcaption>Moves the video into its own small window you can put anywhere. Press Esc and it goes back.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="details">
+        <div class="wrap">
+          <h2 class="reveal">Good to know.</h2>
+          <div class="bento">
+            <div class="tile tile-player reveal">
+              <h3>The player still works.</h3>
+              <p>The site thinks it’s in fullscreen, so its own controls keep working: play, pause, seek, volume, captions and quality. Picture-in-picture only gives you the browser’s basic controls.</p>
+              <div class="controls-strip"><img src="assets/controls.webp" width="1600" height="263" loading="lazy" alt="The player's own controls along the bottom of the video: play, the seek bar, volume and the exit button." /></div>
+            </div>
+            <div class="tile tile-popup reveal">
+              <picture>
+                <source srcset="assets/popup-dark.png" media="(prefers-color-scheme: dark)" />
+                <img src="assets/popup-light.png" width="320" height="393" loading="lazy" alt="The toolbar popup for video.example: an on/off switch, the size choice with Custom size selected, width and height of 80%, and where it sits." />
+              </picture>
+              <h3>Every site, or just this one.</h3>
+              <p>Click the toolbar icon to change it for every site, or just the one you’re on.</p>
+            </div>
+            <div class="tile tile-key reveal">
+              <p class="keys"><kbd class="big">Esc</kbd></p>
+              <h3>Press Esc to get out.</h3>
+            </div>
+            <div class="tile tile-key reveal">
+              <p class="keys"><kbd>Alt</kbd><kbd>Shift</kbd><kbd>F</kbd></p>
+              <h3>Need real fullscreen?</h3>
+              <p><kbd class="key">Alt</kbd>+<kbd class="key">Shift</kbd>+<kbd class="key">F</kbd> switches between the tab and your whole screen. You can change the key in your browser’s shortcut settings.</p>
+            </div>
+            <div class="tile tile-sites reveal">
+              <h3>Tested on</h3>
+              <ul class="sites"><li>YouTube</li><li>Twitch</li><li>Kick</li><li>Facebook</li><li>Streamable</li><li>LinkedIn</li></ul>
+              <p>Checked in October&nbsp;2026. It should work on any site whose player uses the browser’s normal fullscreen. We haven’t tried X, Reddit, Vimeo, or sign-in services like Netflix yet.</p>
+            </div>
+            <div class="tile tile-icon reveal">
+              <p class="icons"><img src="assets/icon-on.svg" width="40" height="40" alt="On" /><img src="assets/icon-off.svg" width="40" height="40" alt="Off" /></p>
+              <h3>On or off at a glance.</h3>
+              <p>The toolbar icon shows whether it’s on for the site you’re on.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="privacy" id="privacy">
+        <div class="wrap">
+          <p class="eyebrow reveal">Privacy</p>
+          <h2 class="reveal">It doesn’t collect anything.</h2>
+          <p class="intro reveal">No tracking, no account, and it never connects to the internet. Your settings stay in your browser. If you use browser sync, they sync like your other settings.</p>
+          <p class="intro reveal">When you install it, the browser warns that it can “read and change all your data on all websites.” That sounds scary, so here’s why: <strong>it has to catch the fullscreen button on any site, including videos embedded from other sites. It doesn’t read or send anything.</strong></p>
+          <p class="reveal"><a class="link" href="privacy.html">Read the privacy policy</a></p>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="wrap faq">
+          <h2 class="reveal">Questions</h2>
+          <details>
+            <summary>How do I get normal fullscreen back?</summary>
+            <p>Press <kbd class="key">Alt</kbd>+<kbd class="key">Shift</kbd>+<kbd class="key">F</kbd>. It switches between fullscreen in the tab and your whole screen. You can also turn it off for a site from the toolbar icon.</p>
+          </details>
+          <details>
+            <summary>Can I turn it off for one site?</summary>
+            <p>Yes. Go to the site, click the toolbar icon, and flip the switch.</p>
+          </details>
+          <details>
+            <summary>Does it work on Netflix?</summary>
+            <p>We haven’t tested it yet, since it needs an account. If it doesn’t work, let us know.</p>
+          </details>
+          <details>
+            <summary>Is there a Firefox or Safari version?</summary>
+            <p>Not right now. It’s only for Chrome and Microsoft&nbsp;Edge.</p>
+          </details>
+          <details>
+            <summary>A site doesn’t work. Now what?</summary>
+            <p>Email <a class="inline-link" href="mailto:inquiries@avorforge.com">inquiries@avorforge.com</a> with the link and we’ll take a look.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="closing">
+        <img class="reveal" src="assets/icon.svg" width="96" height="96" alt="" />
+        <h2 class="reveal"><span class="name">Full&nbsp;Window, Not&nbsp;Screen</span><span class="h1-sub">Video Sizer</span></h2>
+        <div class="cta reveal">
+          <a class="button" href="#" data-get data-primary>Get the extension</a>
+          <a class="link get-other" href="#" data-other></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p class="fine">Video: “Earth from Space in 4K – Expedition 65 Edition,” courtesy of NASA. NASA doesn’t endorse this extension. Wallpaper photo by Steve A Johnson on Pexels. Chrome is a trademark of Google LLC. Microsoft Edge and Windows are trademarks of Microsoft Corporation. This extension isn’t made or endorsed by Google or Microsoft.</p>
+        <div class="footer-bottom">
+          <p>Copyright © 2026 Avor Forge&nbsp;LLC.</p>
+          <p class="footer-links"><a href="privacy.html">Privacy policy</a><a href="mailto:inquiries@avorforge.com">Contact</a><a href="https://avorforge.com/">avorforge.com</a></p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" style="--page-token: 17">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture 5: document-root player</title>
+    <style>
+      /* A watch page in the style of YouTube's: the player asks for fullscreen on <html> (not on the player),
+         and its fullscreen layout sizes the player with 100vh and toggles attributes in fullscreenchange. */
+      html, body { margin: 0; background: #f0e0d0; font: 14px sans-serif; }
+      #masthead { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: rgb(255, 165, 0); z-index: 1000; }
+      watch-shell { display: block; position: absolute; top: 80px; left: 40px; width: 640px; }
+      watch-shell[fullscreen] { top: 0; left: 0; width: 100%; }
+      #player-box { position: relative; height: 360px; }
+      watch-shell[fullscreen] #player-box { height: 100vh; }
+      .player { position: relative; z-index: 0; width: 100%; height: 100%; background: rgb(17, 17, 17); }
+      .player video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+      .controls { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; z-index: 20; background: rgb(200, 0, 0); }
+      body.no-scroll { overflow: hidden; }
+      #below { height: 2400px; margin-top: 480px; background: rgb(0, 128, 0); }
+      .player.autohide .controls { opacity: 0; }
+      /* A seek bar that maps the pointer as YouTube's does: (clientX - box.left) / offsetWidth, and a tooltip
+         placed from the button's getBoundingClientRect() with position: fixed. */
+      .seek { position: absolute; left: 0; right: 0; bottom: 40px; height: 12px; z-index: 21; background: rgb(0, 200, 0); }
+      .tip { position: fixed; z-index: 30; width: 60px; height: 20px; background: rgb(255, 255, 0); }
+      .tooltip { position: absolute; left: 8px; top: 8px; padding: 4px; background: rgb(28, 28, 28); color: #fff; pointer-events: none; }
+    </style>
+    <script src="/fixture-log.js"></script>
+  </head>
+  <body>
+    <header id="masthead">Masthead</header>
+    <watch-shell id="shell">
+      <div id="player-box">
+        <div id="player" class="player">
+          <video id="video"></video>
+          <div id="seek" class="seek"></div>
+          <div id="controls" class="controls">
+            <button id="fs" type="button">Fullscreen</button>
+            <button id="play" type="button">Play/pause</button>
+            <button id="exit" type="button">Exit fullscreen</button>
+          </div>
+        </div>
+      </div>
+      <div id="tip" class="tip" hidden></div>
+      <div id="below">Comments</div>
+    </watch-shell>
+    <script>
+      CFS.watch();
+      var root = document.documentElement;
+      var shell = document.getElementById("shell");
+      var video = document.getElementById("video");
+      CFS.makeVideo(video, "#1464dc");
+      document.getElementById("fs").addEventListener("click", function () {
+        CFS.request(root);
+      });
+      document.getElementById("exit").addEventListener("click", function () {
+        CFS.exit();
+      });
+      document.getElementById("play").addEventListener("click", function () {
+        CFS.log("play");
+      });
+      var seek = document.getElementById("seek");
+      var dragging = false;
+      var seekTo = function (event, phase) {
+        var box = seek.getBoundingClientRect();
+        CFS.log("seek", { phase: phase, fraction: (event.clientX - box.left) / seek.offsetWidth });
+      };
+      seek.addEventListener("mousedown", function (event) {
+        dragging = true;
+        seekTo(event, "down");
+      });
+      document.addEventListener("mousemove", function (event) {
+        if (dragging) seekTo(event, "move");
+      });
+      document.addEventListener("mouseup", function (event) {
+        if (!dragging) return;
+        dragging = false;
+        seekTo(event, "up");
+      });
+      var playButton = document.getElementById("play");
+      var tip = document.getElementById("tip");
+      playButton.addEventListener("mouseenter", function () {
+        var box = playButton.getBoundingClientRect();
+        tip.style.left = box.left + "px";
+        tip.style.top = box.top - 24 + "px";
+        tip.hidden = false;
+      });
+      playButton.addEventListener("mouseleave", function () {
+        tip.hidden = true;
+      });
+      var writes = 0;
+      document.addEventListener("fullscreenchange", function () {
+        var active = document.fullscreenElement === root;
+        shell.toggleAttribute("fullscreen", active);
+        document.body.classList.toggle("no-scroll", active);
+        if (!document.body.className) document.body.removeAttribute("class");
+      });
+      // Like YouTube, the page keeps setting custom properties on <html> while it is fullscreen.
+      setInterval(function () {
+        if (document.fullscreenElement === root) root.style.setProperty("--page-writes", String(++writes));
+      }, 20);
+      // ?activity: like YouTube's player, show the controls and a tooltip on every mouse move over the player
+      // and hide them again shortly after, or as soon as the mouse leaves (class toggles, attribute changes and
+      // node insertions/removals that do not touch any style attribute).
+      if (location.search.indexOf("activity") >= 0) {
+        var player = document.getElementById("player");
+        var play = document.getElementById("play");
+        var tooltip = null;
+        var hideTimer = 0;
+        window.__activity = 0;
+        var hide = function () {
+          player.classList.add("autohide");
+          if (tooltip) tooltip.remove();
+          tooltip = null;
+        };
+        player.addEventListener("mousemove", function (event) {
+          window.__activity++;
+          player.classList.remove("autohide");
+          play.setAttribute("aria-label", window.__activity % 2 ? "Pause (k)" : "Play (k)");
+          if (tooltip) tooltip.remove();
+          tooltip = document.createElement("div");
+          tooltip.className = "tooltip";
+          tooltip.textContent = Math.round(event.offsetX) + " × " + Math.round(event.offsetY);
+          player.appendChild(tooltip);
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hide, 120);
+        });
+        player.addEventListener("mouseleave", hide);
+      }
+      window.__ready = true;
+    </script>
+  </body>
+</html>

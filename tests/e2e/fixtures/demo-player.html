@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Demo player</title>
+    <!--
+      A plain local video page with its own player controls, for the demo-player end-to-end test. No logos, no
+      network: the video is drawn on a canvas.
+    -->
+    <style>
+      html, body { margin: 0; background: #fff; color: #1f1f1f; font: 14px/1.4 system-ui, sans-serif; }
+      header { height: 56px; border-bottom: 1px solid #e3e3e3; display: flex; align-items: center; padding: 0 24px; gap: 16px; }
+      header .name { font-weight: 600; }
+      header .search { flex: 0 1 360px; height: 32px; margin-left: auto; margin-right: auto; border: 1px solid #c4c7c5; border-radius: 16px; }
+      #layout { display: grid; grid-template-columns: 768px 320px; gap: 24px; padding: 24px; }
+      .player { position: relative; width: 768px; height: 432px; background: #000; overflow: hidden; }
+      .player video { display: block; width: 100%; height: 100%; object-fit: contain; }
+      .player:fullscreen { width: 100%; height: 100%; }
+      .controls { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px;
+                  background: rgba(0, 0, 0, 0.55); color: #fff; }
+      .controls button { all: unset; cursor: pointer; width: 28px; height: 28px; display: grid; place-items: center; font-size: 15px; }
+      .controls button:focus-visible { outline: 2px solid #fff; }
+      .bar { flex: 1; height: 4px; background: rgba(255, 255, 255, 0.35); position: relative; cursor: pointer; }
+      .bar span { position: absolute; left: 0; top: 0; bottom: 0; background: #fff; }
+      .time { font-variant-numeric: tabular-nums; font-size: 13px; }
+      h1 { font-size: 20px; margin: 16px 0 8px; font-weight: 600; }
+      .line { height: 10px; background: #eceded; border-radius: 5px; margin: 10px 0; }
+      .side { display: grid; gap: 12px; align-content: start; }
+      .thumb { display: grid; grid-template-columns: 140px 1fr; gap: 10px; }
+      .thumb .box { height: 79px; background: #dfe3e8; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <header><span class="name">Video page</span><span class="search"></span></header>
+    <div id="layout">
+      <div>
+        <div id="player" class="player">
+          <video id="video"></video>
+          <div class="controls">
+            <button id="play" type="button" aria-label="Pause">❚❚</button>
+            <span id="time" class="time">0:00 / 3:20</span>
+            <div id="bar" class="bar"><span id="progress"></span></div>
+            <button id="mute" type="button" aria-label="Mute">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="#fff"><path d="M2 7h3l4-3v10l-4-3H2z" /><rect x="11" y="6" width="1.6" height="6" /><rect x="14" y="4" width="1.6" height="10" /></svg>
+            </button>
+            <button id="fs" type="button" aria-label="Fullscreen">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2"><path d="M1 6V1h5M10 1h5v5M15 10v5h-5M6 15H1v-5" /></svg>
+            </button>
+          </div>
+        </div>
+        <h1>A walk in the hills</h1>
+        <div class="line" style="width: 40%"></div>
+        <div class="line" style="width: 90%"></div>
+        <div class="line" style="width: 75%"></div>
+      </div>
+      <div class="side">
+        <div class="thumb"><div class="box"></div><div><div class="line"></div><div class="line" style="width: 60%"></div></div></div>
+        <div class="thumb"><div class="box"></div><div><div class="line"></div><div class="line" style="width: 70%"></div></div></div>
+        <div class="thumb"><div class="box"></div><div><div class="line"></div><div class="line" style="width: 50%"></div></div></div>
+        <div class="thumb"><div class="box"></div><div><div class="line"></div><div class="line" style="width: 65%"></div></div></div>
+      </div>
+    </div>
+    <script>
+      var DURATION = 200;
+      var player = document.getElementById("player");
+      var video = document.getElementById("video");
+      var playButton = document.getElementById("play");
+      var progress = document.getElementById("progress");
+      var timeText = document.getElementById("time");
+      var canvas = document.createElement("canvas");
+      canvas.width = 1280;
+      canvas.height = 720;
+      var g = canvas.getContext("2d");
+      var t = 42;
+      var playing = true;
+
+      function hill(x, y, r, colour) {
+        g.fillStyle = colour;
+        g.beginPath();
+        g.arc(x, y, r, 0, Math.PI * 2);
+        g.fill();
+      }
+      function draw() {
+        g.fillStyle = "#9cc3e6";
+        g.fillRect(0, 0, 1280, 720);
+        hill(980, 170, 60, "#f6d26b");
+        var cloud = (t * 6) % 1600 - 200;
+        g.fillStyle = "#ffffff";
+        g.fillRect(cloud, 120, 180, 36);
+        g.fillRect(cloud + 40, 96, 100, 40);
+        hill(250, 1150, 700, "#6f9e5c");
+        hill(1100, 1250, 760, "#5b8a4b");
+        hill(640, 1480, 900, "#4a7a3d");
+      }
+      function format(s) {
+        s = Math.floor(s);
+        return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+      }
+      function tick() {
+        if (playing) t += 0.1;
+        draw();
+        progress.style.width = ((t % DURATION) / DURATION) * 100 + "%";
+        timeText.textContent = format(t % DURATION) + " / " + format(DURATION);
+      }
+      tick();
+      setInterval(tick, 100);
+      video.muted = true;
+      video.playsInline = true;
+      video.srcObject = canvas.captureStream(10);
+      video.play().catch(function () {});
+
+      playButton.addEventListener("click", function () {
+        playing = !playing;
+        playButton.textContent = playing ? "❚❚" : "▶";
+        playButton.setAttribute("aria-label", playing ? "Pause" : "Play");
+        if (playing) video.play().catch(function () {});
+        else video.pause();
+      });
+      document.getElementById("bar").addEventListener("click", function (event) {
+        var box = event.currentTarget.getBoundingClientRect();
+        t = ((event.clientX - box.left) / box.width) * DURATION;
+        tick();
+      });
+      document.getElementById("fs").addEventListener("click", function () {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else player.requestFullscreen();
+      });
+      window.__ready = true;
+    </script>
+  </body>
+</html>

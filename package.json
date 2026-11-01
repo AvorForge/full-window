@@ -1,0 +1,33 @@
+{
+  "name": "full-window",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full Window, Not Screen: Video Sizer: a Chromium MV3 extension that keeps video fullscreen inside the tab, at a size you choose",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:dev": "node scripts/build.mjs --dev",
+    "icons": "node scripts/render-icons.mjs",
+    "type-check": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "validate": "npm run type-check && npm run test",
+    "test:e2e": "playwright test",
+    "test:all": "npm run validate && npm run test:e2e",
+    "package": "npm run build && node scripts/package.mjs",
+    "store:assets": "node scripts/store-assets.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "@types/chrome": "^0.3.6",
+    "@types/node": "^20.19.43",
+    "esbuild": "^0.28.2",
+    "fflate": "^0.8.3",
+    "happy-dom": "^21.0.4",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.12"
+  }
+}

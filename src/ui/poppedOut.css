@@ -1,0 +1,32 @@
+/* The placeholder tab a popped-out video leaves in its place (docs/ARCHITECTURE.md §5). On top of ui.css. */
+
+html,
+body {
+  height: 100%;
+}
+
+main {
+  min-height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+}
+
+img {
+  display: block;
+  margin-bottom: 4px;
+}
+
+#bring-back {
+  color: var(--label);
+  font: inherit;
+}
