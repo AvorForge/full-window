@@ -1497,8 +1497,8 @@ once with it on. It then requires both runs to give the same result.
   `checkJs`, the e2e tests and `playwright.config.ts`), `test` (`vitest run`), `validate` (type-check + test),
   `test:e2e` (`playwright test`, §9), `test:all` (`validate`, then `test:e2e`), `package`, `store:assets`,
   `icons` (re-render the icon PNGs).
-- **CI.** There is no GitHub Actions workflow (nothing under `.github/workflows/`); Agent Mesh's own test
-  run is this project's CI. `npm run validate` is the gate that needs no browser: `tsc` strict type-check plus
+- **CI.** There is no GitHub Actions workflow (nothing under `.github/workflows/`); the tests are run
+  locally before each push. `npm run validate` is the gate that needs no browser: `tsc` strict type-check plus
   every unit test, and the manifest tests run the production build into `build/`, validate the MV3 manifest
   and every referenced file, and zip `build/` the way `npm run package` does. `npm run test:all` adds the
   end-to-end tests in Chromium (§9). Both rebuild `build/`, so run them one after the other, not in parallel.

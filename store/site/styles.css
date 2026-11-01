@@ -278,3 +278,6 @@ footer .fine { padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
   .segmented button { padding: 8px 12px; font-size: 14px; }
   .tile, .compare .tile { border-radius: 22px; }
 }
+
+/* Two links side by side in the privacy band. */
+.privacy .links { display: flex; flex-wrap: wrap; column-gap: 32px; }

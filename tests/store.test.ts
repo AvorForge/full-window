@@ -305,6 +305,8 @@ describe("store pages", () => {
     // The Open Graph image the page names is in the kit.
     expect(read("site/index.html")).toContain('content="https://avorforge.com/full-window/assets/og.jpg"');
     expect(existsSync(join(SITE, "assets", "og.jpg"))).toBe(true);
+    // The page links to the public source, in the privacy band and the footer.
+    expect(read("site/index.html").match(/href="https:\/\/github\.com\/AvorForge\/full-window"/g)).toHaveLength(2);
   });
 
   it("flags a remote load, a missing file and a remote script in the checks above", () => {
