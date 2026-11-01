@@ -219,7 +219,7 @@ describe("store pages", () => {
     }
   });
 
-  it("site/index.html shows the product name, the credit, the support links, the privacy page and the tested sites", () => {
+  it("site/index.html shows the product name, the credit, the support links and the privacy page, and no tested-sites list", () => {
     const html = read("site/index.html");
     const text = textOf(html);
     expect(html).toContain(`<title>${BRAND.name}</title>`);
@@ -233,7 +233,9 @@ describe("store pages", () => {
     expect(links).toContain(`mailto:${BRAND.support.email}`);
     expect(links).toContain(BRAND.support.url);
     expect(links).toContain("privacy.html");
-    for (const site of TESTED) expect(text, site).toContain(site);
+    // The owner dropped the "Tested on" tile (2026-11-01): the page names no sites.
+    expect(text).not.toContain("Tested on");
+    for (const site of TESTED) expect(text, site).not.toContain(site);
     // The page's icon is the ON icon's master SVG, as it is.
     expect(readFileSync(join(SITE, "assets", "icon.svg"))).toEqual(readFileSync(join(ROOT, "src", "icons", "svg", "window-tl-master-1024.svg")));
   });
