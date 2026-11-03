@@ -273,7 +273,7 @@ output, and no member appears or disappears.
 The fullscreen button of Chromium's built-in `<video controls>` requests fullscreen from inside the browser (the
 media controls' UA shadow DOM), not through page script, so no replacement above ever sees it: on a video file
 opened directly (Chromium's media document) and on every page that uses native controls the browser went really
-fullscreen, and the chosen size and pop-out were never applied (live run 2026-10-30, §8 "Site notes"). The layer
+fullscreen, and the chosen size and pop-out were never applied (live run 2026-10-30, §8 "Bugs found on real pages"). The layer
 therefore listens, in the capture phase on `window` and registered at `document_start` before any page listener,
 for `fullscreenchange` / `webkitfullscreenchange`. When a **trusted** change event (the browser's own; the shim's
 events and the page's synthetic ones are untrusted) reports a real `fullscreenElement`, and
@@ -485,8 +485,8 @@ mouse movement in both modes. `tests/e2e/root-player-activity.spec.ts` keeps it 
 
 #### Container players are scaled too (Twitch in custom-rect, fixed)
 
-**Observed** in the live compatibility run (2026-10-25, Chromium 145, v0.1 build b6b34ca, custom-rect 80 % × 80 %,
-§8 "Site notes"). Twitch's fullscreen button asks for fullscreen on its app root `div#root`, not on `<html>`. The
+**Observed** in the live compatibility run (2026-10-25, Chromium 145, v0.1 build b6b34ca, custom-rect 80 % × 80 %).
+Twitch's fullscreen button asks for fullscreen on its app root `div#root`, not on `<html>`. The
 extension pinned `div#root` to the 1011 × 564 rectangle, but the video and the control bar still covered the
 whole 1264 × 705 tab. Real fullscreen and fill-tab were fine.
 
@@ -974,7 +974,7 @@ has no remote code. The default MV3 extension CSP applies to the popup and optio
 - **Site-specific players** may need per-site quirks. The patch layer is the only place for them, keyed by
   the resolved hostname. The YouTube black tab did not need one. Its cause, a request on the document root
   (§3 "Document-root requests"), is general, so the fix is in the styling layer for every page. Nor did the
-  YouTube seek bar or the Twitch layout found in the live run (§3, "Site notes" below): no site has a quirk.
+  YouTube seek bar or the Twitch layout found in the live run (§3): no site has a quirk.
 - **Containers in custom-rect are scaled.** A page that asks for fullscreen on `<html>` or on any container
   (not a `<video>`/`<iframe>`) is laid out at least viewport-sized and scaled onto the rectangle (§3), so its
   text and controls are drawn smaller, as on a smaller screen at the same resolution. When the rectangle's aspect
@@ -1016,34 +1016,7 @@ has no remote code. The default MV3 extension CSP applies to the popup and optio
   - On Windows a headless window has a 16 px frame (`innerWidth` = window width − 16), and 0 on Linux and
     macOS. Tests that compare the viewport with window bounds take `frameWidthOf()` off.
 
-### Site notes (live compatibility run, 2026-10-25)
-
-Run against real public pages, signed out, with the production build in Chromium 145 (managed Playwright 1.58.2
-build, new headless, Windows), in fill-tab and in custom-rect 80 % × 80 %. Each control of the site's own player
-was exercised in custom fullscreen and compared with real fullscreen on the same page (the extension switched off
-for the site). The full per-check tables, screenshots and scripts are the run's `compat-report.md` and
-`compat-evidence.zip`.
-
-| Site (page tested) | Element the site asks for | Notes |
-| ------------------ | ------------------------- | ----- |
-| YouTube watch page | `<html>` (§3) | Everything matches real fullscreen in both sizes since the seek-bar fix (§3 "One coordinate space"). |
-| YouTube embed in a third-party page | `<body>` in the iframe; the parent pins the `<iframe>` (§4) | In the test browser YouTube rendered the embed without any controls (no fullscreen button, `ytp-hide-controls`, also on `localhost` and with `controls=1`, extension not loaded), so it was entered with the player's own `f` shortcut. Shortcuts, clicks and exit match real fullscreen. |
-| Twitch live channel and VOD | `div#root` (a container) | The player is a `position: fixed`, viewport-sized layer inside `div#root`; it covered the whole tab in a custom rectangle until containers were scaled like the root (§3 "Container players are scaled too"). |
-| Twitch embed (`player.twitch.tv`) | a `div` in the iframe; the parent pins the `<iframe>` | On entering fullscreen, real or custom, the embed restarts its live stream paused at 0. Same as real fullscreen. |
-| Kick live channel | a player `div` | Matches real fullscreen. Kick's own "Try 1080p / Not now" prompt was answered "Not now". |
-| Facebook public video | a player `div` | Matches real fullscreen. A "See more on Facebook" login dialog appears after a few seconds; it was closed with its Close button. |
-| Streamable | `div#player-<id>` | Matches real fullscreen. The cookie notice covers the fullscreen button until it is answered ("Your Privacy Choices", opt-out). |
-| LinkedIn public video post (company page) | the video.js player `div` | Enter, play/pause, seek, double-click, exit and Esc match real fullscreen. Its mute, captions and playback-rate controls did nothing in real fullscreen either for the test runner, so they were not compared. |
-| Instagram reel | — | The reel player has no fullscreen control: nothing to intercept. |
-| TikTok, X, Reddit, Rumble, Vimeo, Dailymotion | — | Not tested: TikTok showed a login wall (after its Skip button, the next click opened a sign-up step); X answered "Access to x.com was denied" (HTTP 403); Reddit "You've been blocked by network security"; Rumble a Cloudflare bot check (HTTP 403); vimeo.com "Verify to continue"; Vimeo's embed loads but refuses playback ("Unable to play video. Please try again in a supported browser"); Dailymotion's player resources answer HTTP 403 and no `<video>` appears. Each was identical with the extension not loaded. Embeds of Twitch, Vimeo or YouTube inside Reddit or X could therefore not be reached either. |
-| Netflix, Prime Video, Disney+, Max, Hulu | — | Not tested: they need accounts and DRM. |
-
-None of these sites needed a per-site quirk. Headless limits apply to every row: real fullscreen cannot be left
-with Esc there (the key goes to the page over CDP, not to the browser's handler), so Esc is only tested in custom
-fullscreen, and compositing is in software, so a compositor-only effect like the YouTube flicker cannot be seen
-(its causes are checked instead).
-
-### Site notes (live compatibility run, 2026-10-30)
+### Bugs found on real pages (2026-10-30)
 
 Run in Google Chrome 156 at main 315ff26, in fill-tab, custom-rect 80 % × 80 % and pop-out. Three bugs, each fixed
 for every page, with an offline fixture and end-to-end test (§9):
@@ -1166,7 +1139,7 @@ Also added:
     `holeCoversViewport` spots fill-tab. A plain backdrop below `<html>`. Page writes to `<html>`'s style are
     kept on exit and not counted against the re-apply budget. The scroll position is put back.
   - `tests/repo.test.ts`: `test:e2e` / `test:all` stay out of `validate`.
-- With the live compatibility run of 2026-10-30 (§8 "Site notes"):
+- With the live compatibility run of 2026-10-30 (§8 "Bugs found on real pages"):
   - `tests/selectors.test.ts` "rewriteNegatedFullscreen": negated fullscreen pseudo-classes at any depth inside
     `:not()` become `:is(<pseudo-class>, <marker>)`, positive ones and strings, attributes and escapes do not.
   - `tests/fullscreenLayer.test.ts` "styling": the scan lists `:not(:fullscreen)` rules for the in-place rewrite
@@ -1177,7 +1150,7 @@ Also added:
     hidden, and the element is fake-fullscreen with one change event of the same prefix; again on the same
     element leaves; untrusted events, the page's own pass-through request, `preferReal`, a disabled site, an
     element without media and `goReal` stay real.
-- With the live compatibility run (2026-10-25, §8 "Site notes"):
+- With the live compatibility run (2026-10-25):
   - `tests/geometry.test.ts`: `rootSpace` and the conversions between screen and the scaled element's space.
   - `tests/fullscreenLayer.test.ts` "scaled document root: one coordinate space": while `<html>` is scaled,
     `getBoundingClientRect()` reports its unscaled space and `elementFromPoint()` takes it, only for connected
@@ -1313,7 +1286,7 @@ once with it on. It then requires both runs to give the same result.
        page measures the screen again.
      - Screen geometry in these tests comes from the browser (`screenRectOf`: Playwright over CDP, and
        `hitAtScreen`: an unpatched isolated world), because the page measures in the scaled element's space.
-  6. The live run of 2026-10-30 (§8 "Site notes"), one fixture per bug, each test failing before its fix:
+  6. The live run of 2026-10-30 (§8 "Bugs found on real pages"), one fixture per bug, each test failing before its fix:
      - `animated-ancestor.html` (`animated-ancestor.spec.ts`), for videojs.org: the player inside a hero wrapper
        with a finished `fill-mode: both` entrance animation (`hero-video-in`) lands at the viewport in fill-tab
        (before: at 152, 144) with its control bar on screen; after Esc the wrapper's animation is the same

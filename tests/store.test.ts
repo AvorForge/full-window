@@ -17,7 +17,7 @@ function pngSize(path: string): { width: number; height: number } {
 }
 
 /** Video sites the listing and the product page must not name: the owner wants no tested-sites list anywhere. */
-const SITES = ["YouTube", "Twitch", "Kick", "Facebook", "Streamable", "LinkedIn", "Reddit", "Rumble", "Vimeo", "Dailymotion", "TikTok", "Instagram", "Prime Video", "Disney", "Hulu"];
+const SITES = ["YouTube", "Twitch", "Kick", "Facebook", "Streamable", "LinkedIn", "Reddit", "Rumble", "Vimeo", "Dailymotion", "TikTok", "Instagram", "Netflix", "Prime Video", "Disney", "Hulu"];
 
 function section(markdown: string, title: string): string {
   const start = markdown.indexOf(`## ${title}\n`);
