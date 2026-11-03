@@ -31,8 +31,6 @@ Esc leaves. Alt+Shift+F switches between fullscreen inside the tab and the brows
 change the key in the browser's shortcuts page. Settings apply to every site, and any site can have its own
 from the toolbar button.
 
-Tested with the players on YouTube, Twitch, Kick, Facebook, Streamable and LinkedIn.
-
 Small: about 85 KB, about 1 MB of memory per tab, and no extra work while the video plays.
 
 Privacy: no data collected, no network requests, no account. Settings are kept in the browser's own

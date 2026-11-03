@@ -16,9 +16,8 @@ function pngSize(path: string): { width: number; height: number } {
   return { width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
 }
 
-/** The sites the live compatibility run in docs/ARCHITECTURE.md §8 proves, and ones the listing must not name. */
-const TESTED = ["YouTube", "Twitch", "Kick", "Facebook", "Streamable", "LinkedIn"];
-const NOT_TESTED = ["Reddit", "Rumble", "Vimeo", "Dailymotion", "TikTok", "Instagram", "Netflix", "Prime Video", "Disney", "Max", "Hulu"];
+/** Video sites the listing and the product page must not name: the owner wants no tested-sites list anywhere. */
+const SITES = ["YouTube", "Twitch", "Kick", "Facebook", "Streamable", "LinkedIn", "Reddit", "Rumble", "Vimeo", "Dailymotion", "TikTok", "Instagram", "Prime Video", "Disney", "Hulu"];
 
 function section(markdown: string, title: string): string {
   const start = markdown.indexOf(`## ${title}\n`);
@@ -44,17 +43,11 @@ describe("store listing", () => {
     expect(section(toLf(crlf), "Single purpose")).toBe(section(listing, "Single purpose"));
   });
 
-  it("the long description names only the sites docs/ARCHITECTURE.md proves, and the measured facts", () => {
+  it("the long description names no sites and no tested list, and has the measured facts", () => {
     const long = section(listing, "Long description").replace(/\s+/g, " ");
-    const architecture = readText(join(ROOT, "docs", "ARCHITECTURE.md"));
-    const siteNotes = architecture.slice(architecture.indexOf("### Site notes (live compatibility run, 2026-10-25)"), architecture.indexOf("## 9. Test plan"));
-    for (const site of TESTED) {
-      expect(long, site).toContain(site);
-      // A row of the site notes table, not the "Not tested" rows.
-      expect(siteNotes, site).toMatch(new RegExp(`^\\| ${site}(?![^|]*\\|[^|]*\\| Not tested)`, "m"));
-    }
-    for (const site of NOT_TESTED) expect(long, site).not.toMatch(new RegExp(`\\b${site}\\b`));
-    expect(long).not.toMatch(/\bX\b/);
+    // The owner wants no tested-sites wording anywhere (2026-11-03).
+    expect(long).not.toMatch(/tested/i);
+    for (const site of [...SITES, "X"]) expect(long, site).not.toMatch(new RegExp(`\\b${site}\\b`));
     expect(long).toContain("player controls keep working");
     expect(long).toMatch(/picture-in-picture/i);
     expect(long).toContain("about 85 KB");
@@ -235,7 +228,7 @@ describe("store pages", () => {
     expect(links).toContain("privacy.html");
     // The owner dropped the "Tested on" tile (2026-11-01): the page names no sites.
     expect(text).not.toContain("Tested on");
-    for (const site of TESTED) expect(text, site).not.toContain(site);
+    for (const site of SITES) expect(text, site).not.toContain(site);
     // The page's icon is the ON icon's master SVG, as it is.
     expect(readFileSync(join(SITE, "assets", "icon.svg"))).toEqual(readFileSync(join(ROOT, "src", "icons", "svg", "window-tl-master-1024.svg")));
   });

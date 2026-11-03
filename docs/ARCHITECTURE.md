@@ -1144,7 +1144,7 @@ Also added:
   the build copies the committed icon PNGs (ON as the manifest's icons, OFF at 16/32 px as the toolbar
   default), each PNG has its SVG source, and the 128 px icon has 96 px artwork in 16 px of padding.
 - `tests/store.test.ts`: `store/listing.md` (short description ≤ 132 characters and equal to the manifest's,
-  only the sites the §8 site notes prove, single purpose, permissions, Edge fields, which images each store gets),
+  no site names and no tested-sites list, single purpose, permissions, Edge fields, which images each store gets),
   the privacy pages (the plain and the styled one have the same text), the product page (the name, the credit, the
   support, privacy and GitHub links, no tested-sites list, every local reference is a file in `store/site/`, nothing loaded
   from another origin), the image sizes, and that `npm run store:assets` writes only the Edge logo.
